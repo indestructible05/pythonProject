@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
 
 
 class Ui_MainWindow1(object):
@@ -80,11 +81,6 @@ class Ui_MainWindow1(object):
         self.label.setText(_translate("MainWindow1", "TextLabel"))
 
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow1 = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow1()
-    ui.setupUi(MainWindow1)
-    MainWindow1.show()
-    sys.exit(app.exec_())
+
+
+
