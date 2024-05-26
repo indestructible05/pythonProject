@@ -35,6 +35,15 @@ class Ui_MainWindow1(object):
         brush.setStyle(QtCore.Qt.NoBrush)
         item.setForeground(brush)
         self.listWidget.addItem(item)
+
+        item2 = QtWidgets.QListWidgetItem()
+        item2.setText("Элемент 2")
+        item2.setToolTip("Всплывающая подсказка")
+        item2.setStatusTip("Сообщение строку статуса")
+        item2.setWhatsThis("Подсказка \"что это?\"")
+        self.listWidget.addItem(item2)
+
+
         self.horizontalLayout_2.addWidget(self.listWidget)
         self.verticalScrollBar = QtWidgets.QScrollBar(self.groupBox)
         self.verticalScrollBar.setOrientation(QtCore.Qt.Vertical)
@@ -66,6 +75,9 @@ class Ui_MainWindow1(object):
         self.retranslateUi(MainWindow1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow1)
 
+        self.toolButton_2.clicked.connect(self.add_item)
+        self.toolButton_3.clicked.connect(self.remove_item)
+
     def retranslateUi(self, MainWindow1):
         _translate = QtCore.QCoreApplication.translate
         MainWindow1.setWindowTitle(_translate("MainWindow1", "MainWindow"))
@@ -80,7 +92,25 @@ class Ui_MainWindow1(object):
         self.label_2.setText(_translate("MainWindow1", "TextLabel"))
         self.label.setText(_translate("MainWindow1", "TextLabel"))
 
+    def add_item(self):
+        self.listWidget.addItem("Новый элемент")
+
+    def remove_item(self):
+        if self.listWidget.currentRow() != -1:
+            self.listWidget.takeItem(self.listWidget.currentRow())
 
 
+
+
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow1()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 
 

@@ -1,9 +1,6 @@
 import sqlite3
-import sys
-
 from PyQt5 import QtWidgets
 import calc
-import calcu
 
 db = sqlite3.connect('database.db')
 cursor = db.cursor()
@@ -33,15 +30,18 @@ class Registration(QtWidgets.QMainWindow, calc.Ui_MainWindow):
         self.pushButton_2.pressed.connect(self.login)
 
     def login(self):
-        login_page = Login()
-        login_page.show()
+        self.login = Login()
+        self.login.show()
         self.hide()
 
     def reg(self):
         user_login = self.lineEdit.text()
         user_password = self.lineEdit_2.text()
 
-        if len(user_login) == 0 or len(user_password) == 0:
+        if len(user_login) == 0:
+            return
+
+        if len(user_password) == 0:
             return
 
         cursor.execute(f'SELECT login FROM users WHERE login="{user_login}"')
@@ -50,7 +50,7 @@ class Registration(QtWidgets.QMainWindow, calc.Ui_MainWindow):
             self.label.setText(f'Аккаунт {user_login} успешно зарегистрирован!')
             db.commit()
         else:
-            self.label.setText('Такая запись уже имеется!')
+            self.label.setText('Такая записать уже имеется!')
 
 
 class Login(QtWidgets.QMainWindow, calc.Ui_MainWindow):
@@ -68,38 +68,41 @@ class Login(QtWidgets.QMainWindow, calc.Ui_MainWindow):
         self.pushButton_2.pressed.connect(self.reg)
 
     def reg(self):
-        reg_page = Registration()
-        reg_page.show()
+        self.reg = Registration()
+        self.reg.show()
         self.hide()
 
     def login(self):
         user_login = self.lineEdit.text()
         user_password = self.lineEdit_2.text()
 
-        if len(user_login) == 0 or len(user_password) == 0:
+        if len(user_login) == 0:
+            return
+
+        if len(user_password) == 0:
             return
 
         cursor.execute(f'SELECT password FROM users WHERE login="{user_login}"')
-        check_pass = cursor.fetchone()
+        check_pass = cursor.fetchall()
 
-        if check_pass is not None and check_pass[0] == user_password:
-            self.label.setText('Успешная авторизация!')
+        cursor.execute(f'SELECT login FROM users WHERE login="{user_login}"')
+        check_login = cursor.fetchall()
 
-            self.main_window = MainWindow1(user_login)
-            self.main_window.show()
-            self.hide()
+        if check_pass and check_login:
+            if check_pass and check_login:
+                if check_pass[0][0] == user_password and check_login[0][0] == user_login:
+                    self.label.setText('Успешная авторизация!')
+                    MainWindow1 = QtWidgets.QMainWindow()
+                    ui = Ui_MainWindow1()
+                    ui.setupUi(MainWindow1)
+                    MainWindow1.show()
+                    self.hide()
+            else:
+                self.label.setText('Ошибка авторизации!')
         else:
-            self.label.setText('Ошибка авторизации')
+            self.label.setText('Запись отсутствует')
 
-class MainWindow1(QtWidgets.QMainWindow, calcu.Ui_MainWindow1):
-            def __init__(self, user_login):
-                super(MainWindow1, self).__init__()
-                self.setupUi(self)
-                self.label.setText(f"Добро пожаловать, {user_login}")
-                self.setWindowTitle('Калькулятор')
-
-
-app = QtWidgets.QApplication([])
+App = QtWidgets.QApplication([])
 window = Login()
 window.show()
-sys.exit(app.exec())
+App.exec()
